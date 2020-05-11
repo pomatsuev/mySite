@@ -49,9 +49,9 @@ const App = (props) => {
             <Route path="/" exact>
               <Home />
             </Route>
-            <Router path="/about">
+            <Route path="/about">
               <About username="pomatsuev"/>
-            </Router>
+            </Route>
             <Route path="/feedback">
               <p>Тут должна была быть форма обратной звязи...
                 Но это же визитка...

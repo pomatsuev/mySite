@@ -1,42 +1,32 @@
-import React, { useState, useEffect } from 'react';
-
+import React from 'react';
+import {LoadData} from './LoadData';
+ 
 const Repos = ({username}) => {
-  const [isLoading, setLoading] = useState(false); 
-  const [repos, setRepos] = useState([]); 
-  let mounted = true; 
-  useEffect(()=>{    
-    setLoading(true);      
-    fetch(`https://api.github.com/users/${username}/repos`)
-      .then(response=>{
-        if(response.status === 200){
-          return response.json();
-        }
-      })
-      .then(response=>{
-        if(mounted){
-          setRepos(response);
-          setLoading(false);
-        }
-      })      
-    return () => mounted = false;
-  }, []);
-
   return (
-    <>
-    {
-      isLoading 
-        ? <p> Загружается список репозиториев...</p>
-        : <ul>
-            {repos.map(repo=>{
-              return <li key={repo.id}><a 
-                href={repo.html_url} 
-                className="light">
-                  {repo.name} &lt;
-              </a></li>
-            })}
-          </ul>
-    }
-    </>
+    <LoadData url={`https://api.github.com/users/${username}/repos`}>
+      {
+        (isLoading, err, data) => {
+          return <>
+            {
+              isLoading
+                ? <p> Загружается список репозиториев...</p>
+                : <ul>
+                    {data && data.map(repo=>{
+                      return <li key={repo.id}><a 
+                        href={repo.html_url} 
+                        className="light">
+                          {repo.name} &lt;
+                      </a></li>
+                    })}
+                  </ul>
+            }
+            {
+              err && <p>Ошибка загрузки репозиториев: {err.message}</p>
+            }
+          </>
+        }
+      }
+    </LoadData>   
   )
 }
 
